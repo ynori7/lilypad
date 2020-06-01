@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,11 +23,25 @@ func Test_Response(t *testing.T) {
 				Body:   "it works!",
 			},
 		},
-		"error": {
-			actual: ErrorResponse(500, fmt.Errorf("uh oh")),
+		"internal error": {
+			actual: ErrorResponse(errors.InternalServerError("something went wrong")),
 			expected: Response{
 				Status: 500,
-				Body:   "500 uh oh",
+				Body:   "500 something went wrong",
+			},
+		},
+		"not found error": {
+			actual: ErrorResponse(errors.NotFoundError("page not found")),
+			expected: Response{
+				Status: 404,
+				Body:   "404 page not found",
+			},
+		},
+		"bad request error": {
+			actual: ErrorResponse(errors.BadRequestError("you messed up")),
+			expected: Response{
+				Status: 400,
+				Body:   "400 you messed up",
 			},
 		},
 		"permanent redirect": {

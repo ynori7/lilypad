@@ -22,13 +22,8 @@ func SuccessResponse(body string) Response {
 }
 
 // ErrorResponse returns a non-successful response
-func ErrorResponse(status int, err error) Response {
-	httpError := errors.HttpError{
-		Status:  status,
-		Message: err.Error(),
-	}
-
-	body, e := httpError.Write()
+func ErrorResponse(err errors.HttpError) Response {
+	body, e := err.Write()
 	if e != nil {
 		return Response{
 			Status: http.StatusInternalServerError,
@@ -37,7 +32,7 @@ func ErrorResponse(status int, err error) Response {
 	}
 
 	return Response{
-		Status: status,
+		Status: err.Status,
 		Body:   body,
 	}
 }

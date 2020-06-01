@@ -57,8 +57,11 @@ func Test_WritePlaintextError(t *testing.T) {
 func Test_WriteJsonError(t *testing.T) {
 	//  given
 	err := HttpError{
-		Status:  500,
-		Message: "Something went wrong",
+		Status:    500,
+		Code:      "BROKEN",
+		Title:     "Uh oh",
+		Message:   "Something went wrong",
+		Retriable: true,
 	}
 
 	// when
@@ -67,5 +70,5 @@ func Test_WriteJsonError(t *testing.T) {
 
 	// then
 	require.NoError(t, e)
-	assert.Equal(t, `{"status":500,"message":"Something went wrong"}`, actual)
+	assert.JSONEq(t, `{"status":500,"code":"BROKEN","title":"Uh oh","message":"Something went wrong","retriable":true}`, actual)
 }

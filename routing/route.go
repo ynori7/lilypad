@@ -1,6 +1,11 @@
 package routing
 
-import "github.com/ynori7/lilypad/handler"
+import (
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/ynori7/lilypad/handler"
+)
 
 // Route represents a route to be handled by the router
 type Route struct {
@@ -17,4 +22,8 @@ type StaticContentRoute struct {
 	PathPrefix string
 	//The path to the directory to be served
 	Directory string
+}
+
+func Vars(r *http.Request) map[string]string {
+	return mux.Vars(r)
 }
