@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/ynori7/lilypad/handler"
 )
 
 var defaultRouter = mux.NewRouter()
@@ -11,17 +12,7 @@ var defaultRouter = mux.NewRouter()
 // RegisterRoutes takes a slice of routes and registers them as router HandleFuncs
 func RegisterRoutes(routes ...Route) {
 	for _, route := range routes {
-		r := defaultRouter.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
-			resp := route.Handler(r)
-
-			if resp.Status == http.StatusMovedPermanently || resp.Status == http.StatusFound {
-				http.Redirect(w, r, resp.RedirectUrl, resp.Status)
-				return
-			}
-
-			w.WriteHeader(resp.Status)
-			w.Write([]byte(resp.Body))
-		})
+		r := defaultRouter.HandleFunc(route.Path, getHandlerWrapper(route.Handler))
 
 		if route.Host != "" {
 			r.Host(route.Host)
@@ -46,5 +37,19 @@ func RegisterStaticontentRoutes(routes ...StaticContentRoute) {
 				http.FileServer(http.Dir(route.Directory)),
 			),
 		)
+	}
+}
+
+func getHandlerWrapper(h handler.Handler) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := h(r)
+
+		if resp.Status == http.StatusMovedPermanently || resp.Status == http.StatusFound {
+			http.Redirect(w, r, resp.RedirectUrl, resp.Status)
+			return
+		}
+
+		w.WriteHeader(resp.Status)
+		w.Write(resp.Body)
 	}
 }
