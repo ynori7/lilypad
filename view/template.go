@@ -7,7 +7,7 @@ import (
 )
 
 // RenderTemplate generates output with the given template and parameters. If the execution fails, an error is returned.
-func RenderTemplate(templateToRender string, data interface{}) (string, error) {
+func RenderTemplate(templateToRender string, data interface{}) ([]byte, error) {
 	t := template.Must(template.New("html").
 		Funcs(getFuncMap()).
 		Parse(templateToRender))
@@ -17,9 +17,9 @@ func RenderTemplate(templateToRender string, data interface{}) (string, error) {
 
 	err := t.Execute(w, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	w.Flush()
-	return b.String(), nil
+	return b.Bytes(), nil
 }

@@ -77,7 +77,7 @@ func Test_RegisterGlobalTemplateFuncs(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	assert.Equal(t, `<html>
+	assert.Equal(t, []byte(`<html>
 <head>
 </head>
 <body>
@@ -86,5 +86,5 @@ func Test_RegisterGlobalTemplateFuncs(t *testing.T) {
 </section>
 </body>
 </html>
-`, actual)
+`), actual)
 }
