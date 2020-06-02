@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -64,4 +65,16 @@ func Test_Response(t *testing.T) {
 		// then
 		assert.Equal(t, testresults.expected, testresults.actual, testcase)
 	}
+}
+
+func Test_ErrorResponse_WithWriteFailure(t *testing.T) {
+	// given
+	errors.UseMarkupErrors("<html><bodyblah") //invalid template
+
+	// when
+	r := ErrorResponse(errors.BadRequestError("you messed up"))
+
+	// then
+	assert.Equal(t, 500, r.Status, "it should be a 500 even though we returned a 400")
+	assert.True(t, strings.HasPrefix(string(r.Body), "html/template:"))
 }

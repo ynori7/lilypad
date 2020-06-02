@@ -17,10 +17,7 @@ func Test_WriteHtmlError(t *testing.T) {
 </body>
 </html>
 `
-	err := HttpError{
-		Status:  500,
-		Message: "Something went wrong",
-	}
+	err := BadRequestError("invalid input")
 
 	// when
 	UseMarkupErrors(template)
@@ -31,8 +28,8 @@ func Test_WriteHtmlError(t *testing.T) {
 	assert.Equal(t, `<html>
 <head></head>
 <body>
-<h1>500</h1>
-<p>Something went wrong</p>
+<h1>400</h1>
+<p>invalid input</p>
 </body>
 </html>
 `, string(actual))
@@ -40,10 +37,7 @@ func Test_WriteHtmlError(t *testing.T) {
 
 func Test_WritePlaintextError(t *testing.T) {
 	//  given
-	err := HttpError{
-		Status:  500,
-		Message: "Something went wrong",
-	}
+	err := InternalServerError("Something went wrong")
 
 	// when
 	UsePlaintextErrors()
@@ -56,13 +50,13 @@ func Test_WritePlaintextError(t *testing.T) {
 
 func Test_WriteJsonError(t *testing.T) {
 	//  given
-	err := HttpError{
-		Status:    500,
-		Code:      "BROKEN",
-		Title:     "Uh oh",
-		Message:   "Something went wrong",
-		Retriable: true,
-	}
+	err := New(
+		500,
+		"BROKEN",
+		"Uh oh",
+		"Something went wrong",
+		true,
+	)
 
 	// when
 	UseJSONErrors()
@@ -75,7 +69,7 @@ func Test_WriteJsonError(t *testing.T) {
 
 func Test_WriteJsonError_WithExtraFields(t *testing.T) {
 	//  given
-	err := NotFoundError("page not found").WithTitle("missing").WithCode("NOT_FOUND")
+	err := NotFoundError("page not found").WithTitle("missing").WithCode("NOT_FOUND").WithRetriable(false)
 
 	// when
 	UseJSONErrors()
