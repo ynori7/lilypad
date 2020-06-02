@@ -38,7 +38,7 @@ routing.RegisterRoutes([]routing.Route{
         Handler: Goodbye,
     },
 }...)
-```workerpool
+```
 
 ### Handlers
 Lilypad's handler definition makes it easier to build your http handlers. You no longer
