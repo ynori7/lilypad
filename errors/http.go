@@ -78,14 +78,14 @@ func (e HttpError) Write() ([]byte, error) {
 	errorType, template := getErrorConfig()
 
 	switch errorType {
-	case ErrorType_Markup:
+	case ErrorTypeMarkup:
 		out, err := view.RenderTemplate(template, e)
 		if err != nil {
 			return nil, err
 		}
 		return []byte(out), nil
 
-	case ErrorType_Json:
+	case ErrorTypeJSON:
 		out, err := json.Marshal(e)
 		if err != nil {
 			return nil, err

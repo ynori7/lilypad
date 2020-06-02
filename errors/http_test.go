@@ -65,7 +65,7 @@ func Test_WriteJsonError(t *testing.T) {
 	}
 
 	// when
-	UseJsonErrors()
+	UseJSONErrors()
 	actual, e := err.Write()
 
 	// then
@@ -78,7 +78,7 @@ func Test_WriteJsonError_WithExtraFields(t *testing.T) {
 	err := NotFoundError("page not found").WithTitle("missing").WithCode("NOT_FOUND")
 
 	// when
-	UseJsonErrors()
+	UseJSONErrors()
 	actual, e := err.Write()
 
 	// then

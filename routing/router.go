@@ -28,8 +28,8 @@ func RegisterRoutes(routes ...Route) {
 	}
 }
 
-// RegisterRoutes takes a slice of routes and registers them as router HandleFuncs
-func RegisterStaticontentRoutes(routes ...StaticContentRoute) {
+// RegisterStatiContentRoutes takes a slice of static content routes and registers them as router HandleFuncs
+func RegisterStatiContentRoutes(routes ...StaticContentRoute) {
 	for _, route := range routes {
 		defaultRouter.PathPrefix(route.PathPrefix).Handler(
 			http.StripPrefix(
@@ -45,11 +45,11 @@ func getHandlerWrapper(h handler.Handler) func(w http.ResponseWriter, r *http.Re
 		resp := h(r)
 
 		if resp.Status == http.StatusMovedPermanently || resp.Status == http.StatusFound {
-			http.Redirect(w, r, resp.RedirectUrl, resp.Status)
+			http.Redirect(w, r, resp.RedirectURL, resp.Status)
 			return
 		}
 
 		w.WriteHeader(resp.Status)
-		w.Write(resp.Body)
+		_, _ = w.Write(resp.Body)
 	}
 }

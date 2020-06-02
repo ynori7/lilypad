@@ -2,11 +2,11 @@ package log
 
 import (
 	"net/http"
-	
+
 	"github.com/sirupsen/logrus"
 )
 
-const IpHeader = "X-FORWARDED_FOR"
+const ipHeader = "X-FORWARDED_FOR"
 
 func init() {
 	logrus.SetFormatter(&logrus.TextFormatter{
@@ -15,8 +15,10 @@ func init() {
 	SetLevel(LevelDebug)
 }
 
+// Fields is a map of attributes to be included when logging
 type Fields map[string]interface{}
 
+// Logger is an entity which handles logging
 type Logger interface {
 	Debug(args ...interface{})
 	Debugf(format string, args ...interface{})
@@ -36,46 +38,57 @@ type Logger interface {
 	WithFields(fields Fields) Logger
 }
 
+// Debug logs a message at the debug level
 func Debug(args ...interface{}) {
 	logrus.Debug(args...)
 }
 
+// Debugf logs a message at the debug level
 func Debugf(format string, args ...interface{}) {
 	logrus.Debugf(format, args...)
 }
 
+// Info logs a message at the info level
 func Info(args ...interface{}) {
 	logrus.Info(args...)
 }
 
+// Infof logs a message at the info level
 func Infof(format string, args ...interface{}) {
 	logrus.Infof(format, args...)
 }
 
+// Warn logs a message at the warn level
 func Warn(args ...interface{}) {
 	logrus.Warn(args...)
 }
 
+// Warnf logs a message at the warn level
 func Warnf(format string, args ...interface{}) {
 	logrus.Warnf(format, args...)
 }
 
+// Error logs a message at the error level
 func Error(args ...interface{}) {
 	logrus.Error(args...)
 }
 
+// Errorf logs a message at the error level
 func Errorf(format string, args ...interface{}) {
 	logrus.Errorf(format, args...)
 }
 
+// Fatal logs a message at the fatal level
 func Fatal(args ...interface{}) {
 	logrus.Fatal(args...)
 }
 
+// Fatalf logs a message at the fatal level
 func Fatalf(format string, args ...interface{}) {
 	logrus.Fatalf(format, args...)
 }
 
+// WithFields creates a logger with log fields added to it
 func WithFields(fields Fields) Logger {
 	return &Entry{
 		logger: logrus.WithFields(logrus.Fields(fields)),
@@ -86,15 +99,15 @@ func WithFields(fields Fields) Logger {
 func WithRequest(r *http.Request) Logger {
 	return &Entry{
 		logger: logrus.WithFields(logrus.Fields{
-			"ClientIp": getIpFromRequest(r),
+			"ClientIp": getIPFromRequest(r),
 		}),
 	}
 }
 
-func getIpFromRequest(r *http.Request) string {
-	forwardedIp := r.Header.Get(IpHeader)
-	if forwardedIp != "" {
-		return forwardedIp
+func getIPFromRequest(r *http.Request) string {
+	forwardedIP := r.Header.Get(ipHeader)
+	if forwardedIP != "" {
+		return forwardedIP
 	}
 
 	return r.RemoteAddr

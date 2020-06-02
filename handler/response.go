@@ -10,7 +10,7 @@ import (
 type Response struct {
 	Status      int
 	Body        []byte
-	RedirectUrl string
+	RedirectURL string
 }
 
 // SuccessResponse returns a successful http response
@@ -45,6 +45,6 @@ func RedirectResponse(path string, permanent bool) Response {
 	}
 	return Response{
 		Status:      status,
-		RedirectUrl: path,
+		RedirectURL: path,
 	}
 }

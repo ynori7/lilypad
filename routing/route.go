@@ -24,6 +24,13 @@ type StaticContentRoute struct {
 	Directory string
 }
 
+// Vars returns the route parameters
 func Vars(r *http.Request) map[string]string {
 	return mux.Vars(r)
+}
+
+// GetVar returns a specific route parameter
+func GetVar(r *http.Request, name string) string {
+	v := mux.Vars(r)
+	return v[name]
 }

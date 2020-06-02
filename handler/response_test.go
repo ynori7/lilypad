@@ -48,14 +48,14 @@ func Test_Response(t *testing.T) {
 			actual: RedirectResponse("http://www.blah.com", true),
 			expected: Response{
 				Status:      301,
-				RedirectUrl: "http://www.blah.com",
+				RedirectURL: "http://www.blah.com",
 			},
 		},
 		"temporary redirect": {
 			actual: RedirectResponse("http://www.blah.com", false),
 			expected: Response{
 				Status:      302,
-				RedirectUrl: "http://www.blah.com",
+				RedirectURL: "http://www.blah.com",
 			},
 		},
 	}
