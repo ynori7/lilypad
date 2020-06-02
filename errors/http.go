@@ -18,18 +18,21 @@ type HttpError struct {
 }
 
 // WithCode sets the error code
-func (e HttpError) WithCode(code string) {
+func (e HttpError) WithCode(code string) HttpError {
 	e.Code = code
+	return e
 }
 
 // WithTitle sets the error title
-func (e HttpError) WithTitle(title string) {
+func (e HttpError) WithTitle(title string) HttpError {
 	e.Title = title
+	return e
 }
 
 // WithRetriable sets the retriable flag on the error
-func (e HttpError) WithRetriable(retriable bool) {
+func (e HttpError) WithRetriable(retriable bool) HttpError {
 	e.Retriable = retriable
+	return e
 }
 
 // New returns a new http error
@@ -71,25 +74,25 @@ func NotFoundError(message string) HttpError {
 }
 
 // Write returns a string representation of the error based on the global configuration. In case of failure, an error is returned
-func (e HttpError) Write() (string, error) {
+func (e HttpError) Write() ([]byte, error) {
 	errorType, template := getErrorConfig()
 
 	switch errorType {
 	case ErrorType_Markup:
 		out, err := view.RenderTemplate(template, e)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return out, nil
+		return []byte(out), nil
 
 	case ErrorType_Json:
 		out, err := json.Marshal(e)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return string(out), nil
+		return out, nil
 
 	default:
-		return fmt.Sprintf("%d %s", e.Status, e.Message), nil
+		return []byte(fmt.Sprintf("%d %s", e.Status, e.Message)), nil
 	}
 }

@@ -9,12 +9,12 @@ import (
 // Response is a basic http response
 type Response struct {
 	Status      int
-	Body        string
+	Body        []byte
 	RedirectUrl string
 }
 
 // SuccessResponse returns a successful http response
-func SuccessResponse(body string) Response {
+func SuccessResponse(body []byte) Response {
 	return Response{
 		Status: 200,
 		Body:   body,
@@ -27,7 +27,7 @@ func ErrorResponse(err errors.HttpError) Response {
 	if e != nil {
 		return Response{
 			Status: http.StatusInternalServerError,
-			Body:   e.Error(),
+			Body:   []byte(e.Error()),
 		}
 	}
 

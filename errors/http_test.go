@@ -35,7 +35,7 @@ func Test_WriteHtmlError(t *testing.T) {
 <p>Something went wrong</p>
 </body>
 </html>
-`, actual)
+`, string(actual))
 }
 
 func Test_WritePlaintextError(t *testing.T) {
@@ -51,7 +51,7 @@ func Test_WritePlaintextError(t *testing.T) {
 
 	// then
 	require.NoError(t, e)
-	assert.Equal(t, "500 Something went wrong", actual)
+	assert.Equal(t, "500 Something went wrong", string(actual))
 }
 
 func Test_WriteJsonError(t *testing.T) {
@@ -70,5 +70,18 @@ func Test_WriteJsonError(t *testing.T) {
 
 	// then
 	require.NoError(t, e)
-	assert.JSONEq(t, `{"status":500,"code":"BROKEN","title":"Uh oh","message":"Something went wrong","retriable":true}`, actual)
+	assert.JSONEq(t, `{"status":500,"code":"BROKEN","title":"Uh oh","message":"Something went wrong","retriable":true}`, string(actual))
+}
+
+func Test_WriteJsonError_WithExtraFields(t *testing.T) {
+	//  given
+	err := NotFoundError("page not found").WithTitle("missing").WithCode("NOT_FOUND")
+
+	// when
+	UseJsonErrors()
+	actual, e := err.Write()
+
+	// then
+	require.NoError(t, e)
+	assert.JSONEq(t, `{"status":404,"code":"NOT_FOUND","title":"missing","message":"page not found","retriable":false}`, string(actual))
 }

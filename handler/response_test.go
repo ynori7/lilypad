@@ -17,31 +17,31 @@ func Test_Response(t *testing.T) {
 		expected Response
 	}{
 		"success": {
-			actual: SuccessResponse("it works!"),
+			actual: SuccessResponse([]byte("it works!")),
 			expected: Response{
 				Status: 200,
-				Body:   "it works!",
+				Body:   []byte("it works!"),
 			},
 		},
 		"internal error": {
 			actual: ErrorResponse(errors.InternalServerError("something went wrong")),
 			expected: Response{
 				Status: 500,
-				Body:   "500 something went wrong",
+				Body:   []byte("500 something went wrong"),
 			},
 		},
 		"not found error": {
 			actual: ErrorResponse(errors.NotFoundError("page not found")),
 			expected: Response{
 				Status: 404,
-				Body:   "404 page not found",
+				Body:   []byte("404 page not found"),
 			},
 		},
 		"bad request error": {
 			actual: ErrorResponse(errors.BadRequestError("you messed up")),
 			expected: Response{
 				Status: 400,
-				Body:   "400 you messed up",
+				Body:   []byte("400 you messed up"),
 			},
 		},
 		"permanent redirect": {
