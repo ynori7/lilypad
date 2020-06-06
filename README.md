@@ -67,6 +67,14 @@ func Hello(r *http.Request) handler.Response {
 
 It's also possible to return a `RedirectResponse` to redirect to another page.
 
+You can also specify the cache duration like this:
+
+```go
+return SuccessResponse(resp).WithMaxAge(300)
+```
+
+Or any other arbitrary headers using the `WithHeaders()` method.
+
 ### Errors
 The errors package provides a definition for HttpErros as well as convenient wrappers
 for getting some of the most common error types.

@@ -58,7 +58,7 @@ func Hello(r *http.Request) handler.Response {
 		return handler.ErrorResponse(errors.InternalServerError("something went wrong"))
 	}
 
-	return handler.SuccessResponse(resp)
+	return handler.SuccessResponse(resp).WithMaxAge(300) //cache for 5 minutes
 }
 
 func isValidName(name string) bool {

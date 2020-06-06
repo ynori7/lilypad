@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/ynori7/lilypad/errors"
 )
 
@@ -65,6 +66,21 @@ func Test_Response(t *testing.T) {
 		// then
 		assert.Equal(t, testresults.expected, testresults.actual, testcase)
 	}
+}
+
+func Test_WithCacheHeaders(t *testing.T) {
+	// given
+	errors.UsePlaintextErrors()
+
+	// when
+	resp := SuccessResponse([]byte("it works!")).WithMaxAge(300)
+
+	// then
+	assert.Equal(t, 200, resp.Status)
+	require.NotEmpty(t, resp.Headers)
+	assert.NotEmpty(t, resp.Headers[cacheControlHeader])
+	assert.NotEmpty(t, resp.Headers[expiresHeader])
+	assert.NotEmpty(t, resp.Headers[lastModifiedHeader])
 }
 
 func Test_ErrorResponse_WithWriteFailure(t *testing.T) {

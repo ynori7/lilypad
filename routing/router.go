@@ -1,6 +1,7 @@
 package routing
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -49,6 +50,10 @@ func getHandlerWrapper(h handler.Handler) func(w http.ResponseWriter, r *http.Re
 			return
 		}
 
+		for header, value := range resp.Headers {
+			fmt.Println(header, value)
+			w.Header().Set(header, value)
+		}
 		w.WriteHeader(resp.Status)
 		_, _ = w.Write(resp.Body)
 	}
