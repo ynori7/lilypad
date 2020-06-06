@@ -23,8 +23,8 @@ func getCacheControlHeaders(cacheDuration int64) Headers {
 		return headers
 	}
 
-	cacheSince := time.Now().Format(http.TimeFormat)
-	cacheUntil := time.Now().Add(time.Duration(cacheDuration) * time.Second).Format(http.TimeFormat)
+	cacheSince := time.Now().In(time.UTC).Format(http.TimeFormat)
+	cacheUntil := time.Now().In(time.UTC).Add(time.Duration(cacheDuration) * time.Second).Format(http.TimeFormat)
 
 	headers[cacheControlHeader] = fmt.Sprintf("%s %d, %s", maxAge, cacheDuration, publicCache)
 	headers[lastModifiedHeader] = cacheSince
