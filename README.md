@@ -97,8 +97,39 @@ the `WithRequest` method which returns a logger with some fields populated from 
 request such as the client's IP address.
 
 ### Templating
-The view package provides a method to `RenderTemplate` which accepts a template and the
-data used to render it.
+The view package provides a minimalistic method to `RenderTemplate` which accepts a template 
+body as a string and the data used to render it.
+
+Alternatively, you can use nested templates by registering your base layouts like this:
+
+```go
+view.SetLayoutDirectory("path/to/layouts")
+```
+
+This will configure the framework to load all files with the gohtml extension. Next you can 
+render a view like this:
+
+```go
+out, err := view.New("layoutName", "templates/specificTemplate.gohtml").Render(myData)
+```
+
+Here is an example layout.gohtml:
+```gotemplate
+{{ define "layoutName" }}
+<html>
+<body>
+{{ template "body" . }}
+</body>
+</html>
+```
+
+And an example specificTemplate.gohtml:
+```gotemplate
+{{ define "body" }}
+<h1>My Page!</h1>
+<article>blahblah</article>
+{{ end }}
+```
 
 It also has a global register of template functions which can be easily registered like this:
 

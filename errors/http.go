@@ -75,11 +75,18 @@ func NotFoundError(message string) HttpError {
 
 // Write returns a string representation of the error based on the global configuration. In case of failure, an error is returned
 func (e HttpError) Write() ([]byte, error) {
-	errorType, template := getErrorConfig()
+	errorConf := getErrorConfig()
 
-	switch errorType {
+	switch errorConf.errorType {
 	case ErrorTypeMarkup:
-		out, err := view.RenderTemplate(template, e)
+		out, err := view.RenderTemplate(errorConf.templateRaw, e)
+		if err != nil {
+			return nil, err
+		}
+		return []byte(out), nil
+
+	case ErrorTypeMarkupWithLayout:
+		out, err := errorConf.templateWithLayout.Render(e)
 		if err != nil {
 			return nil, err
 		}

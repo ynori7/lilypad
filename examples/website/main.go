@@ -31,8 +31,11 @@ func main() {
 		},
 	})
 
+	// Indicate where the base HTML templates are located
+	view.SetLayoutDirectory("examples/website/view/layout")
+
 	// Error responses should be turned into HTML
-	errors.UseMarkupErrors(ErrorTemplate)
+	errors.UseMarkupErrorsWithLayout("layout", "examples/website/view/error.gohtml")
 
 	// Start the server
 	log.Info("Starting service")
@@ -52,7 +55,7 @@ func Hello(r *http.Request) handler.Response {
 	}
 
 	// Render the view
-	resp, err := view.RenderTemplate(helloTemplate, HelloTemplateData{Name: name})
+	resp, err := view.New("layout", "examples/website/view/hello.gohtml").Render(HelloTemplateData{Name: name})
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Error("Error rendering view")
 		return handler.ErrorResponse(errors.InternalServerError("something went wrong"))
@@ -76,19 +79,3 @@ func isValidName(name string) bool {
 type HelloTemplateData struct {
 	Name string
 }
-
-const helloTemplate = `<html>
-<head></head>
-<body>
-<h1>Hello {{ UppercaseFirstLetter .Name }}
-</body>
-</html>
-`
-const ErrorTemplate = `<html>
-<head></head>
-<body>
-<h1>{{ .Status }}</h1>
-<p>{{ .Message }}</p>
-</body>
-</html>
-`
