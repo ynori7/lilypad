@@ -1,10 +1,10 @@
 package view_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"html/template"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/ynori7/lilypad/view"
 )
@@ -46,6 +46,22 @@ func Test_ExecuteHtmlTemplate(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
+}
+
+func Test_RenderView(t *testing.T) {
+	// given
+	view.SetLayoutDirectory("../examples/website/view/layout")
+
+	// when
+	out, err := view.New("layout", "../examples/website/view/error.gohtml").Render(
+		struct {
+			Status  int
+			Message string
+		}{Status: 400, Message: "oops"})
+
+	// then
+	require.NoError(t, err)
+	assert.NotEmpty(t, out)
 }
 
 func Test_RegisterGlobalTemplateFuncs(t *testing.T) {

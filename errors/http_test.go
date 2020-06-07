@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"github.com/ynori7/lilypad/view"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,6 +34,26 @@ func Test_WriteHtmlError(t *testing.T) {
 </body>
 </html>
 `, string(actual))
+}
+
+func Test_WriteHtmlErrorWithLayout(t *testing.T) {
+	// given
+	view.SetLayoutDirectory("../examples/website/view/layout")
+	err := BadRequestError("invalid input")
+
+	// when
+	UseMarkupErrorsWithLayout("layout", "../examples/website/view/error.gohtml")
+	actual, e := err.Write()
+
+	// then
+	require.NoError(t, e)
+	assert.Equal(t, `<html>
+<head></head>
+<body>
+<h1>400</h1>
+<p>invalid input</p>
+</body>
+</html>`, string(actual))
 }
 
 func Test_WritePlaintextError(t *testing.T) {
