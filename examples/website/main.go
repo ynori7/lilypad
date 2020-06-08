@@ -2,14 +2,12 @@ package main
 
 import (
 	"html/template"
-	"net/http"
 	"strings"
 	"unicode"
 
 	"github.com/ynori7/lilypad/errors"
-	"github.com/ynori7/lilypad/handler"
+	"github.com/ynori7/lilypad/http"
 	"github.com/ynori7/lilypad/log"
-	"github.com/ynori7/lilypad/routing"
 	"github.com/ynori7/lilypad/view"
 )
 
@@ -19,7 +17,7 @@ import (
 
 func main() {
 	// Register the http routes
-	routing.RegisterRoutes(routing.Route{
+	http.RegisterRoutes(http.Route{
 		Path:    "/hello/{name}",
 		Handler: Hello,
 	})
@@ -39,29 +37,29 @@ func main() {
 
 	// Start the server
 	log.Info("Starting service")
-	routing.ServeHttp(":8080")
+	http.ServeHttp(":8080")
 }
 
 // This is the handler which will receive requests
-func Hello(r *http.Request) handler.Response {
+func Hello(r http.Request) http.Response {
 	logger := log.WithRequest(r).WithFields(log.Fields{"logger": "Hello"})
 	logger.Info("Handling request")
 
 	// Validate the input
-	name := routing.GetVar(r, "name")
+	name := http.GetVar(r, "name")
 	if !isValidName(name) {
 		logger.Debug("Invalid name sent")
-		return handler.ErrorResponse(errors.BadRequestError("Names should be non-empty and contain only letters"))
+		return http.ErrorResponse(errors.BadRequestError("Names should be non-empty and contain only letters"))
 	}
 
 	// Render the view
 	resp, err := view.New("layout", "examples/website/view/hello.gohtml").Render(HelloTemplateData{Name: name})
 	if err != nil {
 		log.WithFields(log.Fields{"error": err}).Error("Error rendering view")
-		return handler.ErrorResponse(errors.InternalServerError("something went wrong"))
+		return http.ErrorResponse(errors.InternalServerError("something went wrong"))
 	}
 
-	return handler.SuccessResponse(resp).WithMaxAge(300) //cache for 5 minutes
+	return http.SuccessResponse(resp).WithMaxAge(300) //cache for 5 minutes
 }
 
 func isValidName(name string) bool {

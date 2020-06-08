@@ -15,11 +15,11 @@ handlers which control them without having to pass a router around everywhere.
 To add a route, simply register it like this:
 
 ```go
-import "github.com/ynori7/lilypad/routing"
+import "github.com/ynori7/lilypad/http"
 
 ...
 
-routing.RegisterRoutes(routing.Route{
+http.RegisterRoutes(http.Route{
     Path:    "/hello/{name}",
     Handler: Hello,
 })
@@ -28,7 +28,7 @@ routing.RegisterRoutes(routing.Route{
 RegisterRoutes is variardic, so it's possible to register multiple routes at once:
 
 ```go
-routing.RegisterRoutes([]routing.Route{
+http.RegisterRoutes([]http.Route{
     {
         Path:    "/hello/{name}",
         Handler: Hello,
@@ -49,15 +49,14 @@ For example:
 
 ```go
 import (
-	"github.com/ynori7/lilypad/handler"
-	"github.com/ynori7/lilypad/routing"
+	"github.com/ynori7/lilypad/http"
 )
 
-func Hello(r *http.Request) handler.Response {
-    name := routing.GetVar(r, "name")
+func Hello(r http.Request) http.Response {
+    name := http.GetVar(r, "name")
 
     if !isValidName(name) {
-        return handler.ErrorResponse(errors.BadRequestError("Names should be non-empty and contain only letters"))
+        return http.ErrorResponse(errors.BadRequestError("Names should be non-empty and contain only letters"))
     }
 
     ...

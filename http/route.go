@@ -1,10 +1,9 @@
-package routing
+package http
 
 import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/ynori7/lilypad/handler"
 )
 
 // Route represents a route to be handled by the router
@@ -13,7 +12,7 @@ type Route struct {
 	Method  string
 	Host    string
 	Scheme  string
-	Handler handler.Handler
+	Handler Handler
 }
 
 // StaticContentRoute represents a static content (e.g. images) route to be handled by the router
@@ -30,7 +29,7 @@ func Vars(r *http.Request) map[string]string {
 }
 
 // GetVar returns a specific route parameter
-func GetVar(r *http.Request, name string) string {
+func GetVar(r Request, name string) string {
 	v := mux.Vars(r)
 	return v[name]
 }

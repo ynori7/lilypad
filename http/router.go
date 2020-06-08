@@ -1,10 +1,9 @@
-package routing
+package http
 
 import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/ynori7/lilypad/handler"
 )
 
 var defaultRouter = mux.NewRouter()
@@ -40,7 +39,7 @@ func RegisterStatiContentRoutes(routes ...StaticContentRoute) {
 	}
 }
 
-func getHandlerWrapper(h handler.Handler) func(w http.ResponseWriter, r *http.Request) {
+func getHandlerWrapper(h Handler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		resp := h(r)
 
