@@ -1,4 +1,4 @@
-# Lilypad [![GoDoc](https://godoc.org/github.com/ynori7/lilypad?status.png)](https://godoc.org/github.com/ynori7/lilypad) [![Build Status](https://travis-ci.org/ynori7/lilypad.svg?branch=master)](https://travis-ci.com/github/ynori7/lilypad) [![Coverage Status](https://coveralls.io/repos/github/ynori7/lilypad/badge.svg?branch=master)](https://coveralls.io/github/ynori7/lilypad?branch=master) [![Go Report Card](https://goreportcard.com/badge/ynori7/lilypad)](https://goreportcard.com/report/github.com/ynori7/lilypad)
+# Lilypad [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/ynori7/lilypad) [![Build Status](https://travis-ci.org/ynori7/lilypad.svg?branch=master)](https://travis-ci.com/github/ynori7/lilypad) [![Coverage Status](https://coveralls.io/repos/github/ynori7/lilypad/badge.svg?branch=master)](https://coveralls.io/github/ynori7/lilypad?branch=master) [![Go Report Card](https://goreportcard.com/badge/ynori7/lilypad)](https://goreportcard.com/report/github.com/ynori7/lilypad)
 A lightweight web application framework in Go.
 
 ## Features
