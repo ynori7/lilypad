@@ -20,11 +20,11 @@ type Response struct {
 type Headers map[string]string
 
 // NewResponse returns a new response
-func NewResponse(status int, body []byte, redirectUrl string, headers map[string]string) Response {
+func NewResponse(status int, body []byte, redirectURL string, headers map[string]string) Response {
 	return Response{
 		Status:      status,
 		Body:        body,
-		RedirectURL: redirectUrl,
+		RedirectURL: redirectURL,
 		Headers:     headers,
 	}
 }
