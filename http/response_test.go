@@ -1,6 +1,9 @@
 package http
 
 import (
+	"bytes"
+	"io/ioutil"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -93,4 +96,66 @@ func Test_ErrorResponse_WithWriteFailure(t *testing.T) {
 	// then
 	assert.Equal(t, 500, r.Status, "it should be a 500 even though we returned a 400")
 	assert.True(t, strings.HasPrefix(string(r.Body), "html/template:"))
+}
+
+func Test_FromHttpResponse(t *testing.T) {
+	// given
+	errors.UsePlaintextErrors()
+
+	// when
+	testdata := map[string]struct {
+		httpResp *http.Response
+		expected Response
+	}{
+		"success": {
+			httpResp: &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       ioutil.NopCloser(bytes.NewReader([]byte("hello"))),
+				Header: map[string][]string{
+					"TestHeader":  {"blah"},
+					"MultiHeader": {"blah", "blop"},
+				},
+			},
+			expected: Response{
+				Status: 200,
+				Body:   []byte("hello"),
+				Headers: map[string]string{
+					"TestHeader":  "blah",
+					"MultiHeader": "blah,blop",
+				},
+			},
+		},
+		"success with no body": {
+			httpResp: &http.Response{
+				StatusCode: http.StatusOK,
+			},
+			expected: Response{
+				Status: 200,
+			},
+		},
+		"with redirect": {
+			httpResp: &http.Response{
+				StatusCode: http.StatusFound,
+				Header: map[string][]string{
+					"Location": {"http://www.example.com"},
+				},
+			},
+			expected: Response{
+				Status:      302,
+				RedirectURL: "http://www.example.com",
+				Headers: map[string]string{
+					"Location": "http://www.example.com",
+				},
+			},
+		},
+	}
+
+	for testcase, testdata := range testdata {
+		// when
+		resp, err := FromHttpResponse(testdata.httpResp)
+		require.NoError(t, err, testcase)
+
+		// then
+		assert.Equal(t, testdata.expected, resp, testcase)
+	}
 }

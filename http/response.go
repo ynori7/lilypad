@@ -1,7 +1,9 @@
 package http
 
 import (
+	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/ynori7/lilypad/errors"
 )
@@ -25,6 +27,28 @@ func NewResponse(status int, body []byte, redirectUrl string, headers map[string
 		RedirectURL: redirectUrl,
 		Headers:     headers,
 	}
+}
+
+// FromHttpResponse returns a new response based on the provided http response. Note that it is the caller's duty to close the body.
+func FromHttpResponse(resp *http.Response) (Response, error) {
+	newResp := NewResponse(resp.StatusCode, nil, "", getHeadersFromResponse(resp))
+
+	if resp.Body != nil {
+		responseBody, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return Response{}, err
+		}
+		newResp.Body = responseBody
+	}
+
+	if newResp.Status >= http.StatusMovedPermanently && newResp.Status <= http.StatusPermanentRedirect {
+		redirectUri, err := resp.Location()
+		if redirectUri != nil && err == nil {
+			newResp.RedirectURL = redirectUri.String()
+		}
+	}
+
+	return newResp, nil
 }
 
 // SuccessResponse returns a successful http response
@@ -85,4 +109,16 @@ func mergeMaps(a map[string]string, b map[string]string) map[string]string {
 	}
 
 	return c
+}
+
+func getHeadersFromResponse(resp *http.Response) map[string]string {
+	if len(resp.Header) == 0 {
+		return nil
+	}
+
+	headers := make(map[string]string)
+	for k, v := range resp.Header {
+		headers[k] = strings.Join(v, ",")
+	}
+	return headers
 }
