@@ -15,6 +15,16 @@ func init() {
 	SetLevel(LevelDebug)
 }
 
+// UseJSONFormatter sets the log format to JSON
+func UseJSONFormatter() {
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+}
+
+// UseTextFormatter sets the log format to plain text
+func UseTextFormatter() {
+	logrus.SetFormatter(&logrus.TextFormatter{})
+}
+
 // Fields is a map of attributes to be included when logging
 type Fields map[string]interface{}
 
